@@ -1,0 +1,109 @@
+Sub SendMailnow()
+
+response = MsgBox("Do you wish to send out all the reports?", vbYesNo, "Send Reports")
+    
+If response = vbYes Then
+
+    Set ol = New Outlook.Application
+    
+    For r = 3 To Sheet2.Cells(Rows.Count, 1).End(xlUp).Row
+         Set olm = ol.CreateItemFromTemplate("C:\Users\ChristopherPierce\Documents\PFC Template.msg")
+         With olm
+            .Display
+         End With
+        
+        With olm.GetInspector.WordEditor.Content.Find
+            .Text = "<<airportname>>"
+            .Replacement.Text = Sheet2.Cells(r, 2).Value
+            .Execute Replace:=wdReplaceAll
+        End With
+        
+        With olm.GetInspector.WordEditor.Content.Find
+            .Text = "<<NPC>>"
+            .Replacement.Text = Sheet2.Cells(r, 3).Value
+            .Execute Replace:=wdReplaceAll
+        End With
+        
+        With olm.GetInspector.WordEditor.Content.Find
+            .Text = "<<TPRC>>"
+            .Replacement.Text = FormatCurrency(Sheet2.Cells(r, 4).Value)
+            .Execute Replace:=wdReplaceAll
+        End With
+        
+        With olm.GetInspector.WordEditor.Content.Find
+            .Text = "<<TPR>>"
+            .Replacement.Text = Sheet2.Cells(r, 6).Value
+            .Execute Replace:=wdReplaceAll
+        End With
+        
+        With olm.GetInspector.WordEditor.Content.Find
+            .Text = "<<TPRR>>"
+            .Replacement.Text = FormatCurrency(-1 * Sheet2.Cells(r, 7).Value)
+            .Execute Replace:=wdReplaceAll
+        End With
+        
+        With olm.GetInspector.WordEditor.Content.Find
+            .Text = "<<NA>>"
+            .Replacement.Text = FormatCurrency(Sheet2.Cells(r, 9).Value)
+            .Execute Replace:=wdReplaceAll
+        End With
+        
+        With olm.GetInspector.WordEditor.Content.Find
+            .Text = "<<CCW>>"
+            .Replacement.Text = FormatCurrency(Sheet2.Cells(r, 11).Value)
+            .Execute Replace:=wdReplaceAll
+        End With
+        
+        With olm.GetInspector.WordEditor.Content.Find
+            .Text = "<<CCR>>"
+            .Replacement.Text = FormatCurrency(Sheet2.Cells(r, 12).Value)
+            .Execute Replace:=wdReplaceAll
+        End With
+        
+         With olm.GetInspector.WordEditor.Content.Find
+            .Text = "<<AA>>"
+            .Replacement.Text = FormatCurrency(Sheet2.Cells(r, 13).Value)
+            .Execute Replace:=wdReplaceAll
+        End With
+        
+        With olm.GetInspector.WordEditor.Content.Find
+            .Text = "<<RA>>"
+            .Replacement.Text = FormatCurrency(Sheet2.Cells(r, 14).Value)
+            .Execute Replace:=wdReplaceAll
+        End With
+        
+        With olm.GetInspector.WordEditor.Content.Find
+            .Text = "<<RD>>"
+            .Replacement.Text = Sheet2.Cells(r, 15).Value
+            .Execute Replace:=wdReplaceAll
+        End With
+        
+        With olm.GetInspector.WordEditor.Content.Find
+            .Text = "<<enddate>>"
+            .Replacement.Text = Sheet2.Cells(r, 16).Value
+            .Execute Replace:=wdReplaceAll
+        End With
+
+    If Sheet2.Cells(r, 17).Value = "" Then
+    Else
+
+        With olm
+            .To = Sheet2.Cells(r, 17).Value
+            .CC = Sheet2.Cells(r, 18).Value
+            'Here you can change the subject header
+            .Subject = "Breeze Airways PFC Statement -" & " " & Sheet2.Cells(r, 1).Value
+            Set Editor = .GetInspector.WordEditor
+            .Send
+        End With
+    End If
+    
+    Set olm = Nothing
+    
+    Application.DisplayAlerts = True
+    
+    Next
+
+Else
+    End If
+    
+End Sub
